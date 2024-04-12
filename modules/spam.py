@@ -1,5 +1,6 @@
 import asyncio
 import random
+import traceback
 
 from telethon import TelegramClient, functions, errors
 from loguru import logger
@@ -68,7 +69,7 @@ class Spam(BaseModule):
                 logger.success(f'{client_id} sent a message! №{i+1}')
 
             except Exception as e:
-                logger.error(f'{client._self_id} Error occurred: {e}')
+                logger.error(f'{client._self_id} Error occurred: {traceback.format_exc()}')
 
             await asyncio.sleep(self.kwargs.sleep)
 
@@ -87,7 +88,9 @@ class Spam(BaseModule):
                 await client(functions.channels.JoinChannelRequest(link))
 
     @staticmethod
-    def _participants_to_urls(participants: List[str]) -> str:
+    def _participants_to_urls(participants: List[str] = None) -> str:
+        if not participants:
+            return ''
         return '\u2060'.join([
             f'<a href="tg://user?id={participant}">\u2060</a>' for
             participant in random.choices(participants, k=5)
@@ -98,5 +101,5 @@ class Spam(BaseModule):
         if self.kwargs.obfuscation:
             return text_with_cyrillic_characters_obfuscated(self.kwargs.text)
 
-        return self.kwargs
+        return self.kwargs.text
 

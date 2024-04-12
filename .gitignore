@@ -2,3 +2,4 @@
 templates/**
 sessions/**
 .idea
+poetry.lock

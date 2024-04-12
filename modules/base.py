@@ -5,6 +5,7 @@ from typing import Optional, List, Tuple, Dict, Callable, Any
 from loguru import logger
 
 from models import BaseModel, Account, Configuration
+from utils.client import CustomInitConnectionRequest
 
 
 class BaseModule:
@@ -165,12 +166,11 @@ class BaseModule:
         """
             Converting Session into TelegramClient class
         """
-        client = TelegramClient(
-            sessions.StringSession(account.session),
+        client = CustomInitConnectionRequest.create_cli(
+            session=sessions.StringSession(account.session),
             **account.connect_params,
             proxy=account.proxy
         )
-
         client.parse_mode = 'html'
 
         return client
